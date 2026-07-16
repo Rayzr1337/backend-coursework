@@ -1,21 +1,13 @@
 const express = require('express');
+const taskRoutes = require('./routes/tasks');
 
 const app = express();
 app.use(express.json());
 
 app.get('/health', (req, res) => {
-    res.json({
-        status: 'online'
-    });
+    res.json({ status: 'online' });
 });
 
-app.get('/', (req, res) => {
-    res.json({ 
-        name: "Task API", 
-        version: "1.0", 
-        endpoints: ["/tasks"] 
-    });
-});
-
+app.use('/tasks', taskRoutes);
 
 app.listen(3000, () => { console.log('Listening on port 3000..') });
