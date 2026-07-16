@@ -11,4 +11,12 @@ function show(req, res) {
   res.json(task);
 }
 
-module.exports = { index, show };
+function add(req, res) {
+  if (!req.body || !req.body.title) {
+    return res.status(400).json({ error: 'Task title is required' });
+  }
+  const task = Task.create(req.body);
+  res.status(201).json(task);
+}
+
+module.exports = { index, show, add };

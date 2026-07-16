@@ -5,5 +5,6 @@ const router = Router();
 
 router.get('/', controller.index);
 router.get('/:id', controller.show);
+router.post('/', controller.add);
 
 module.exports = router;
