@@ -17,7 +17,6 @@ function create(data) {
   const task = {
     id: nextId++,
     title: data.title,
-    description: data.description || '',
     completed: data.completed || false,
   };
   tasks.push(task);
@@ -28,9 +27,15 @@ function update(id, data) {
   const task = tasks.find(t => t.id === id);
   if (!task) return null;
   if (data.title !== undefined) task.title = data.title;
-  if (data.description !== undefined) task.description = data.description;
   if (data.completed !== undefined) task.completed = data.completed;
   return task;
 }
 
-module.exports = { getAll, getById, create, update };
+function remove(id) {
+  const idx = tasks.findIndex(t => t.id === id);
+  if (idx === -1) return false;
+  tasks.splice(idx, 1);
+  return true;
+}
+
+module.exports = { getAll, getById, create, update, remove };
