@@ -19,4 +19,33 @@ function add(req, res) {
   res.status(201).json(task);
 }
 
-module.exports = { index, show, add };
+function update(req, res) {
+  const id = Number(req.params.id);
+  const task = Task.getById(id);
+  if (!task) return res.status(404).json({ error: `Task ${id} does not exist` });
+
+  if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+    return res.status(400).json({ error: 'Request body must be a JSON object' });
+  }
+
+  const { title, description, completed } = req.body;
+
+  if (title !== undefined && (typeof title !== 'string' || !title.trim())) {
+    return res.status(400).json({ error: 'Title must be a non-empty string' });
+  }
+  if (description !== undefined && typeof description !== 'string') {
+    return res.status(400).json({ error: 'Description must be a string' });
+  }
+  if (completed !== undefined && typeof completed !== 'boolean') {
+    return res.status(400).json({ error: 'Completed must be a boolean' });
+  }
+
+  if (title === undefined && description === undefined && completed === undefined) {
+    return res.status(400).json({ error: 'No valid fields to update (title, description, completed)' });
+  }
+
+  const updatedTask = Task.update(id, { title, description, completed });
+  res.json(updatedTask);
+}
+
+module.exports = { index, show, add, update };
