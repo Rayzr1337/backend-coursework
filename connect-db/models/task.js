@@ -1,41 +1,17 @@
-let tasks = [
-  { id: 1, title: 'Buy groceries', completed: false },
-  { id: 2, title: 'Walk the dog', completed: true },
-  { id: 3, title: 'Write code', completed: false },
-];
+const db = require('./db.js');
 let nextId = 4;
 
+
 function getAll() {
-  return tasks;
+    const tasks = db.prepare('SELECT * FROM tasks').all();
+    return tasks.map(t => ({ id: t.id, title: t.title, completed: Boolean(t.done) }));
 }
 
 function getById(id) {
-  return tasks.find(t => t.id === id) || null;
-}
-
-function create(data) {
-  const task = {
-    id: nextId++,
-    title: data.title,
-    completed: data.completed || false,
-  };
-  tasks.push(task);
-  return task;
-}
-
-function update(id, data) {
-  const task = tasks.find(t => t.id === id);
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(id);
   if (!task) return null;
-  if (data.title !== undefined) task.title = data.title;
-  if (data.completed !== undefined) task.completed = data.completed;
-  return task;
+  return { id: task.id, title: task.title, completed: Boolean(task.done) };
 }
 
-function remove(id) {
-  const idx = tasks.findIndex(t => t.id === id);
-  if (idx === -1) return false;
-  tasks.splice(idx, 1);
-  return true;
-}
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById  };
