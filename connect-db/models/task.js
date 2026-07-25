@@ -13,5 +13,15 @@ function getById(id) {
   return { id: task.id, title: task.title, completed: Boolean(task.done) };
 }
 
+function create(data) {
+  const result = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)').run(data.title, data.completed ? 1 : 0);
+  
+  return {
+    id: Number(result.lastInsertRowid),
+    title: data.title,
+    completed: Boolean(data.completed)
+  };
+}
 
-module.exports = { getAll, getById  };
+
+module.exports = { getAll, getById, create  };
