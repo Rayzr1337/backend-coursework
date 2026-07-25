@@ -1,16 +1,21 @@
 # Tasks CRUD API
+A minimal Express + SQLite task management API.
+
+## Why SQLite?
+Zero configuration, no database server needed, stored as a single file.
+
+## Database
+The file `tasks.db` is created automatically in the project root on first run.  
+The table is created and seeded with sample tasks on startup.
 
 ## Setup
-
-```
 npm install
+
 npm start
-```
 
 Server starts on port 3000.
 
 ## Endpoints
-
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | /tasks | List all tasks |
@@ -21,6 +26,15 @@ Server starts on port 3000.
 
 Task fields: `title` (string, required), `completed` (boolean).
 
+## Example Query
+```sql
+SELECT * FROM tasks;
+```
+
+## Screenshot
+![Image](https://i.ibb.co/fY0LTC3S/Screenshot-DBViewer.png)
+
 ## Docs
 
 Swagger UI at [/api-docs](http://localhost:3000/api-docs).
+
