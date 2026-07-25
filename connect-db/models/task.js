@@ -23,5 +23,20 @@ function create(data) {
   };
 }
 
+function update(id, data) {
+  db.prepare('UPDATE tasks SET title = ?, done = ? WHERE id = ?').run(data.title, data.completed ? 1 : 0, id);
 
-module.exports = { getAll, getById, create  };
+  return {
+    id,
+    title: data.title,
+    completed: Boolean(data.completed)
+  };
+}
+
+function remove(id) {
+    const result = db.prepare('DELETE FROM tasks WHERE id = ?').run(id);
+    return result.changes > 0;
+}
+
+
+module.exports = { getAll, getById, create, update, remove };

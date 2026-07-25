@@ -49,7 +49,7 @@ function destroy(req, res) {
   const id = Number(req.params.id);
   const ok = Task.remove(id);
   if (!ok) return res.status(404).json({ error: `Task ${id} does not exist` });
-  res.status(204).send();
+  res.status(204).json({ message: `Task ${id} deleted successfully.` });
 }
 
 module.exports = { index, show, add, update, destroy };
