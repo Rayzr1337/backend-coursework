@@ -1,6 +1,4 @@
 const db = require('./db.js');
-let nextId = 4;
-
 
 function getAll() {
     const tasks = db.prepare('SELECT * FROM tasks').all();

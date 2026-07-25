@@ -2,7 +2,7 @@ const Database = require('better-sqlite3');
 
 const db = new Database('tasks.db');
 
-db.pragma('journal_mode = WAL');
+db.pragma('journal_mode = DELETE');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS tasks (
