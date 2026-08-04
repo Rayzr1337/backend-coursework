@@ -1,30 +1,33 @@
-const Database = require('better-sqlite3');
+const { Pool } = require("pg");
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+});
 
-const db = new Database('tasks.db');
+async function initializeDatabase() {
+    await pool.query(`
+        CREATE TABLE IF NOT EXISTS tasks (
+            id SERIAL PRIMARY KEY,
+            title TEXT NOT NULL,
+            done BOOLEAN NOT NULL
+        );
+    `);
 
-db.pragma('journal_mode = DELETE');
+    const result = await pool.query("SELECT COUNT(*) FROM tasks");
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    done INTEGER NOT NULL DEFAULT 0
-  )
-`);
+    if (parseInt(result.rows[0].count) === 0) {
+        await pool.query(`
+            INSERT INTO tasks (title, done)
+            VALUES
+                ('Buy groceries', false),
+                ('Finish assignment', false),
+                ('Walk the dog', true);
+        `);
+    }
 
-const countStmt = db.prepare('SELECT COUNT(*) AS count FROM tasks');
-const { count } = countStmt.get();
-
-if (count === 0) {
-  const insertSeed = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)');
-  
-  const seedTransaction = db.transaction(() => {
-    insertSeed.run('Learn SQLite', 0);
-    insertSeed.run('Connect Express to better-sqlite3', 0);
-    insertSeed.run('Complete Week 3 Assignment', 0);
-  });
-  
-  seedTransaction();
+    console.log("Database initialized.");
 }
 
-module.exports = db;
+module.exports = {
+    pool,
+    initializeDatabase,
+};
