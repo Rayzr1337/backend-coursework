@@ -16,17 +16,17 @@ async function show(req, res) {
   res.json(task);
 }
 
-function add(req, res) {
+async function add(req, res) {
   if (!req.body || !req.body.title) {
     return res.status(400).json({ error: 'Task title is required' });
   }
-  const task = Task.create(req.body);
+  const task = await Task.create(req.body);
   res.status(201).json(task);
 }
 
-function update(req, res) {
+async function update(req, res) {
   const id = Number(req.params.id);
-  const task = Task.getById(id);
+  const task = await Task.getById(id);
   if (!task) return res.status(404).json({ error: `Task ${id} does not exist` });
 
   if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
@@ -46,15 +46,15 @@ function update(req, res) {
     return res.status(400).json({ error: 'No valid fields to update (title, completed)' });
   }
 
-  const updatedTask = Task.update(id, { title, completed });
+  const updatedTask = await Task.update(id, { title, completed });
   res.json(updatedTask);
 }
 
-function destroy(req, res) {
+async function destroy(req, res) {
   const id = Number(req.params.id);
-  const ok = Task.remove(id);
+  const ok = await Task.remove(id);
   if (!ok) return res.status(404).json({ error: `Task ${id} does not exist` });
-  res.status(204).json({ message: `Task ${id} deleted successfully.` });
+  res.status(204).send();
 }
 
 module.exports = { index, show, add, update, destroy };
