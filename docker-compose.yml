@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17
+    container_name: taskdb
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: tasks
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - taskdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+
+    container_name: tasks-api
+
+    restart: unless-stopped
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - db
+
+    environment:
+      DATABASE_URL: postgres://postgres:dev@db:5432/tasks
+
+volumes:
+  taskdata:

@@ -1,40 +1,96 @@
-# Tasks CRUD API
-A minimal Express + SQLite task management API.
+# Tasks API
 
-## Why SQLite?
-Zero configuration, no database server needed, stored as a single file.
+A simple RESTful API for managing tasks built with **Node.js**, **Express**, and **PostgreSQL**.
 
-## Database
-The file `tasks.db` is created automatically in the project root on first run.  
-The table is created and seeded with sample tasks on startup.
+## Features
 
-## Setup
+* Create, read, update, and delete tasks
+* PostgreSQL database
+* Dockerized PostgreSQL
+* Swagger API documentation
+* Health check endpoint
+
+## Requirements
+
+* Node.js
+* Docker Desktop
+* npm
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
 npm install
-
-npm start
-
-Server starts on port 3000.
-
-## Endpoints
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | /tasks | List all tasks |
-| GET | /tasks/:id | Get a task |
-| POST | /tasks | Create a task |
-| PUT | /tasks/:id | Update a task |
-| DELETE | /tasks/:id | Delete a task |
-
-Task fields: `title` (string, required), `completed` (boolean).
-
-## Example Query
-```sql
-SELECT * FROM tasks;
 ```
 
-## Screenshot
-![Image](https://i.ibb.co/fY0LTC3S/Screenshot-DBViewer.png)
+Create a `.env` file in the project root:
 
-## Docs
+```env
+DATABASE_URL=postgres://postgres:dev@localhost:5432/tasks
+```
 
-Swagger UI at [/api-docs](http://localhost:3000/api-docs).
+Start PostgreSQL using Docker:
+
+```bash
+docker run \
+  --name taskdb \
+  -e POSTGRES_PASSWORD=dev \
+  -e POSTGRES_DB=tasks \
+  -p 5432:5432 \
+  -v taskdata:/var/lib/postgresql/data \
+  -d postgres:17
+```
+
+Start the server:
+
+```bash
+node server.js
+```
+
+On first startup, the application automatically:
+
+* Creates the `tasks` table if it does not exist.
+* Seeds the database with three sample tasks if the table is empty.
+
+## API Endpoints
+
+| Method | Endpoint     | Description      |
+| ------ | ------------ | ---------------- |
+| GET    | `/tasks`     | Get all tasks    |
+| GET    | `/tasks/:id` | Get a task by ID |
+| POST   | `/tasks`     | Create a task    |
+| PUT    | `/tasks/:id` | Update a task    |
+| DELETE | `/tasks/:id` | Delete a task    |
+| GET    | `/status`    | Health check     |
+
+## Swagger Documentation
+
+After starting the server, visit:
+
+```
+http://localhost:3000/docs
+```
+
+## Example Request
+
+```http
+POST /tasks
+```
+
+```json
+{
+  "title": "Study PostgreSQL",
+  "completed": false
+}
+```
+
+## Project Structure
+
+```
+controllers/
+models/
+routes/
+server.js
+```
 
