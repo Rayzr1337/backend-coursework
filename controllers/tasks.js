@@ -1,13 +1,18 @@
 const Task = require('../models/task');
 
-function index(req, res) {
-  res.json(Task.getAll());
+async function index(req, res) {
+  const tasks = await Task.getAll();
+  res.json(tasks);
 }
 
-function show(req, res) {
+async function show(req, res) {
   const id = Number(req.params.id);
-  const task = Task.getById(id);
-  if (!task) return res.status(404).json({ error: `Task ${id} does not exist` });
+  const task = await Task.getById(id);
+
+  if (!task) {
+    return res.status(404).json({ error: `Task ${id} does not exist` });
+  }
+
   res.json(task);
 }
 

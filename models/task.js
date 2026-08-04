@@ -1,40 +1,42 @@
-const db = require('./db.js');
+const { pool } = require("./db");
 
-function getAll() {
-    const tasks = db.prepare('SELECT * FROM tasks').all();
-    return tasks.map(t => ({ id: t.id, title: t.title, completed: Boolean(t.done) }));
+async function getAll() {
+    const result = await pool.query("SELECT * FROM tasks");
+
+    return result.rows.map(t => ({
+        id: t.id,
+        title: t.title,
+        completed: t.done
+    }));
 }
 
-function getById(id) {
-  const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(id);
-  if (!task) return null;
-  return { id: task.id, title: task.title, completed: Boolean(task.done) };
+async function getById(id) {
+    const result = await pool.query(
+        "SELECT * FROM tasks WHERE id = $1",
+        [id]
+    );
+
+    if (result.rows.length === 0) return null;
+
+    const task = result.rows[0];
+
+    return {
+        id: task.id,
+        title: task.title,
+        completed: task.done
+    };
 }
 
 function create(data) {
-  const result = db.prepare('INSERT INTO tasks (title, done) VALUES (?, ?)').run(data.title, data.completed ? 1 : 0);
-  
-  return {
-    id: Number(result.lastInsertRowid),
-    title: data.title,
-    completed: Boolean(data.completed)
-  };
+    // Stage 3
 }
 
 function update(id, data) {
-  db.prepare('UPDATE tasks SET title = ?, done = ? WHERE id = ?').run(data.title, data.completed ? 1 : 0, id);
-
-  return {
-    id,
-    title: data.title,
-    completed: Boolean(data.completed)
-  };
+    // Stage 3
 }
 
 function remove(id) {
-    const result = db.prepare('DELETE FROM tasks WHERE id = ?').run(id);
-    return result.changes > 0;
+    // Stage 3
 }
-
 
 module.exports = { getAll, getById, create, update, remove };
