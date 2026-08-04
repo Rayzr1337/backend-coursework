@@ -1,57 +1,32 @@
 # Tasks API
 
-A simple RESTful API for managing tasks built with **Node.js**, **Express**, and **PostgreSQL**.
-
-## Features
-
-* Create, read, update, and delete tasks
-* PostgreSQL database
-* Dockerized PostgreSQL
-* Swagger API documentation
-* Health check endpoint
+A simple RESTful API for managing tasks built with **Node.js**, **Express**, and **PostgreSQL**. The application uses Docker Compose to run both the API and the PostgreSQL database.
 
 ## Requirements
 
-* Node.js
 * Docker Desktop
-* npm
+* Node.js (only needed for local development outside Docker)
 
-## Installation
+## Setup
 
-Clone the repository and install dependencies:
+1. Copy `.env.example` to `.env`.
+2. Update the environment variables if needed.
 
-```bash
-npm install
-```
-
-Create a `.env` file in the project root:
+Example:
 
 ```env
-DATABASE_URL=postgres://postgres:dev@localhost:5432/tasks
+DATABASE_URL=postgres://postgres:dev@db:5432/tasks
 ```
 
-Start PostgreSQL using Docker:
+## Run
+
+Start the API and PostgreSQL with a single command:
 
 ```bash
-docker run \
-  --name taskdb \
-  -e POSTGRES_PASSWORD=dev \
-  -e POSTGRES_DB=tasks \
-  -p 5432:5432 \
-  -v taskdata:/var/lib/postgresql/data \
-  -d postgres:17
+docker compose up
 ```
 
-Start the server:
-
-```bash
-node server.js
-```
-
-On first startup, the application automatically:
-
-* Creates the `tasks` table if it does not exist.
-* Seeds the database with three sample tasks if the table is empty.
+The application will automatically create the database table and seed it with sample tasks if the database is empty.
 
 ## API Endpoints
 
@@ -64,33 +39,17 @@ On first startup, the application automatically:
 | DELETE | `/tasks/:id` | Delete a task    |
 | GET    | `/status`    | Health check     |
 
-## Swagger Documentation
+## Screenshots
 
-After starting the server, visit:
+[Screenshot 1](https://res.cloudinary.com/cr01p5h3/image/upload/v1785882098/SCREENSHOT2_pltbrc.png)
 
-```
+[Screenshot 2](https://res.cloudinary.com/cr01p5h3/image/upload/v1785882103/SCREENSHOT3_lispp1.png)
+
+## Swagger
+
+After the application starts, open:
+
+```text
 http://localhost:3000/docs
-```
-
-## Example Request
-
-```http
-POST /tasks
-```
-
-```json
-{
-  "title": "Study PostgreSQL",
-  "completed": false
-}
-```
-
-## Project Structure
-
-```
-controllers/
-models/
-routes/
-server.js
 ```
 
